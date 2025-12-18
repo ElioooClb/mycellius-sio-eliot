@@ -1,0 +1,17 @@
+name: CI
+
+on:
+  push:
+    branches: [dev, test, prod]
+  pull_request:
+    branches: [test, prod]
+
+jobs:
+  validate-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate repository structure
+        run: bash ci/validate_repo.sh

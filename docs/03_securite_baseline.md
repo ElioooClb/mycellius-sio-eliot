@@ -40,10 +40,6 @@ Mesures minimales :
 - 3 VM accessibles et pages DEV/TEST/PROD.
 - Commandes de restart connues/documentées.
 
----
-
-## 2) Registre des risques (mini)
-
 ## 2) Registre des risques (mini)
 
 | Risque                                  | Impact | Vraisemblance | Mesures de réduction                                           | Preuve / test               |

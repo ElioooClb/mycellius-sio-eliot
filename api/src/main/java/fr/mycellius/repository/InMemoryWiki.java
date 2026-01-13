@@ -1,8 +1,11 @@
 package fr.mycellius.repository;
 import fr.mycellius.domain.WikiPage;
 import fr.mycellius.domain.exception.PageNotFoundException;
+import org.springframework.stereotype.Repository;
+
 import java.util.*;
 
+@Repository
 public class InMemoryWiki {
     private final Map<String, WikiPage> pages = new HashMap<>();
     public WikiPage save(WikiPage page) {

@@ -3,7 +3,7 @@ package fr.mycellius.domain;
 public class WikiPage {
     private final String id;
     private String title;
-    private String content;
+    private final String content;
     public WikiPage(String id, String title, String content) {
         if (id == null || id.trim().isEmpty()) {
             throw new IllegalArgumentException("id obligatoire");

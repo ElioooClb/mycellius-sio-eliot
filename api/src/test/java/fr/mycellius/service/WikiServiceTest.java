@@ -1,7 +1,7 @@
 package fr.mycellius.service;
+import fr.mycellius.domain.WikiPage;
 import fr.mycellius.repository.InMemoryWiki;
 import fr.mycellius.domain.exception.PageNotFoundException;
-import fr.mycellius.domain.WikiPage;
 import org.junit.jupiter.api.Test;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;

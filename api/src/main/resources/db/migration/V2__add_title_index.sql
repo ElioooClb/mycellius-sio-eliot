@@ -1,0 +1,1 @@
+CREATE INDEX idx_wiki_page_title ON wiki_page(title);

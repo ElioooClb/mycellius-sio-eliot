@@ -1,0 +1,8 @@
+# IntelliJ / IDE
+.idea/
+*.iml
+# Maven / Java build
+**/target/
+# MySQL (Docker) - données locales (NE PAS VERSIONNER)
+infra/db/data/
+infra/db/backups/

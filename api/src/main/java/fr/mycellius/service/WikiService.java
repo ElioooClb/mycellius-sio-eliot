@@ -1,15 +1,16 @@
 package fr.mycellius.service;
 import fr.mycellius.domain.Tag;
-import fr.mycellius.repository.InMemoryWiki;
+import fr.mycellius.repository.WikiRepository;
 import fr.mycellius.domain.exception.PageNotFoundException;
 import fr.mycellius.domain.WikiPage;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
+
 @Service
 public class WikiService {
-    private final InMemoryWiki repository;
-    public WikiService(InMemoryWiki repository) {
+    private final WikiRepository repository;
+    public WikiService(WikiRepository repository) {
         if (repository == null) {
             throw new IllegalArgumentException("repository obligatoire");
         }

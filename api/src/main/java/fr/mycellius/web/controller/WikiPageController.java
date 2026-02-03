@@ -1,48 +1,42 @@
 package fr.mycellius.web.controller;
-import fr.mycellius.domain.Tag;
+
 import fr.mycellius.domain.WikiPage;
 import fr.mycellius.service.WikiService;
-import fr.mycellius.web.CreatePageRequest;
-import fr.mycellius.web.dto.TagRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 import fr.mycellius.web.dto.CreateWikiPageRequest;
 import jakarta.validation.Valid;
+import fr.mycellius.web.mapper.WikiPageDtoMapper;
+import fr.mycellius.web.dto.WikiPageResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 @RestController
-@RequestMapping("/api/pages")
+@RequestMapping("/api/v1/pages")
 public class WikiPageController {
     private final WikiService wikiService;
-    public WikiPageController(WikiService wikiService) {
+    private final WikiPageDtoMapper mapper;
+    public WikiPageController(WikiService wikiService, WikiPageDtoMapper mapper) {
         this.wikiService = wikiService;
+        this.mapper = mapper;
     }
     @PostMapping
-    public ResponseEntity<WikiPage> createPage(@Valid @RequestBody CreateWikiPageRequest request) {
-        List<Tag> domainTags = toDomainTags(request.tags());
-        WikiPage page = wikiService.createPage(
-                request.id(),
-                request.title(),
-                request.content(),
-                domainTags
-        );
-        return ResponseEntity.status(HttpStatus.CREATED).body(page);
+    public ResponseEntity<WikiPageResponse> createPage(@Valid @RequestBody CreateWikiPageRequest request) {
+        WikiPage created = wikiService.createPage(mapper.toDomain(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toResponse(created));
     }
     @GetMapping("/{id}")
-    public WikiPage getPageById(@PathVariable String id) {
-        return wikiService.getPageById(id);
+    public WikiPageResponse getPageById(@PathVariable String id) {
+        return mapper.toResponse(wikiService.getPageById(id));
     }
-
     @GetMapping("/search")
-    public List<WikiPage> searchByTitle(@RequestParam("title") String fragment) {
-        return wikiService.searchByTitle(fragment);
-    }
-    private List<Tag> toDomainTags(List<TagRequest> tags) {
-        if (tags == null) return List.of();
-        return tags.stream()
-                .map(TagRequest::name)
-                .map(Tag::new)
-                .toList();
+    public Page<WikiPageResponse> searchByTitle(
+            @RequestParam("title") String fragment,
+            @RequestParam(defaultValue = "0") int page,
+                    @RequestParam(defaultValue = "10") int size
+ ) {
+        PageRequest pageable = PageRequest.of(page, size);
+        return wikiService.searchByTitle(fragment, pageable).map(mapper::toResponse);
     }
 }

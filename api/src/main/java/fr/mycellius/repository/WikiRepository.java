@@ -1,10 +1,10 @@
 package fr.mycellius.repository;
 import fr.mycellius.domain.WikiPage;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 public interface WikiRepository {
     WikiPage save(WikiPage page);
-    boolean existsById(String id);
     WikiPage getById(String id);
-    List<WikiPage> searchByTitleContaining(String fragment);
-    List<WikiPage> findAll();
+    Page<WikiPage> findAll(Pageable pageable);
+    Page<WikiPage> searchByTitle(String title, Pageable pageable);
 }

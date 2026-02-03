@@ -1,69 +1,38 @@
 package fr.mycellius.service;
-import fr.mycellius.domain.Tag;
-import fr.mycellius.repository.WikiRepository;
-import fr.mycellius.domain.exception.PageNotFoundException;
 import fr.mycellius.domain.WikiPage;
+import fr.mycellius.domain.exception.PageNotFoundException;
+import fr.mycellius.repository.WikiRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.util.List;
-
-
 @Service
 public class WikiService {
     private final WikiRepository repository;
     public WikiService(WikiRepository repository) {
-        if (repository == null) {
-            throw new IllegalArgumentException("repository obligatoire");
-        }
         this.repository = repository;
     }
-
-    /**
-     * Crée une nouvelle page wiki.
-     * Règles :
-     * - id obligatoire, non vide (WikiPage se charge déjà de vérifier ça)
-     * - title obligatoire, propre (géré par WikiPage)
-     * - si une page existe déjà avec le même id -> IllegalArgumentException
-     *
-     * @param id identifiant unique de la page
-     * @param title titre de la page
-     * @param content contenu initial (peut être vide mais pas null)
-     * @return la page créée
-     */
-    public WikiPage createPage(String id, String title, String content) {
-        return createPage(id, title, content, List.of());
-    }
-    public WikiPage createPage(String id, String title, String content, List<Tag> tag) {
-        if (repository.existsById(id)) {
-            throw new IllegalArgumentException("Une page existe déjà avec l'id " + id);
+    public WikiPage createPage(WikiPage page) {
+        if (page == null) {
+            throw new IllegalArgumentException("La page est obligatoire");
         }
-        WikiPage page = new WikiPage(id, title, content);
+        // Règle métier : id unique
+        WikiPage existing = repository.getById(page.getId());
+        if (existing != null) {
+            throw new IllegalArgumentException("Une page avec l'id " + page.getId() + " existe déjà");
+        }
         return repository.save(page);
     }
-
-    /**
-     * Retourne la page correspondant à l'id fourni.
-     *
-     * @param id identifiant de la page
-     * @return la page trouvée
-     * @throws PageNotFoundException si aucune page avec cet id
-     */
     public WikiPage getPageById(String id) {
-        return repository.getById(id);
+        WikiPage page = repository.getById(id);
+        if (page == null) {
+            throw new PageNotFoundException(id);
+        }
+        return page;
     }
-    /**
-     * Recherche des pages dont le titre contient le fragment fourni (insensible à la
-     casse).
-     *
-     * @param fragment morceau de texte à chercher dans le titre
-     * @return liste (éventuellement vide) de pages correspondantes
-     */
-    public List<WikiPage> searchByTitle(String fragment) {
-        return repository.searchByTitleContaining(fragment);
+    public Page<WikiPage> listPages(Pageable pageable) {
+        return repository.findAll(pageable);
     }
-    /**
-     * Retourne toutes les pages existantes.
-     */
-    public List<WikiPage> listAllPages() {
-        return repository.findAll();
+    public Page<WikiPage> searchByTitle(String fragment, Pageable pageable) {
+        return repository.searchByTitle(fragment, pageable);
     }
 }

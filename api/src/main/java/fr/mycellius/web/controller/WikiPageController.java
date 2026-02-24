@@ -30,6 +30,14 @@ public class WikiPageController {
     public WikiPageResponse getPageById(@PathVariable String id) {
         return mapper.toResponse(wikiService.getPageById(id));
     }
+    @GetMapping
+    public Page<WikiPageResponse> listPages(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        PageRequest pageable = PageRequest.of(page, size);
+        return wikiService.listPages(pageable).map(mapper::toResponse);
+    }
     @GetMapping("/search")
     public Page<WikiPageResponse> searchByTitle(
             @RequestParam("title") String fragment,

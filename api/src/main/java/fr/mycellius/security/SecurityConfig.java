@@ -28,18 +28,20 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 // Public
+                                .requestMatchers("/error").permitAll()
                                 .requestMatchers("/api/v1/auth/login").permitAll()
                                 .requestMatchers("/api/health", "/actuator/health").permitAll()
                                 // Swagger/OpenAPI
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                 // RBAC Pages
-                                .requestMatchers(HttpMethod.GET, "/api/v1/pages/**")
-                                .hasAnyRole("STAGIAIRE", "DEV", "ADMIN")
-                                .requestMatchers(HttpMethod.POST, "/api/v1/pages/**")
-                                .hasAnyRole("DEV", "ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/api/v1/pages/**")
-                                .hasAnyRole("DEV", "ADMIN")
-                                .anyRequest().authenticated()
+                        // RBAC Pages
+                        .requestMatchers(HttpMethod.GET, "/api/v1/pages", "/api/v1/pages/**")
+                        .hasAnyRole("STAGIAIRE", "DEV", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/pages", "/api/v1/pages/**")
+                        .hasAnyRole("DEV", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/pages", "/api/v1/pages/**")
+                        .hasAnyRole("DEV", "ADMIN")
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtService),
                         UsernamePasswordAuthenticationFilter.class);

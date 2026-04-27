@@ -31,13 +31,14 @@ public class SecurityConfig {
                                 .requestMatchers("/error").permitAll()
                                 .requestMatchers("/api/v1/auth/login").permitAll()
                                 .requestMatchers("/api/health", "/actuator/health").permitAll()
-                                // Swagger/OpenAPI
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                 // RBAC Pages
                         // RBAC Pages
                         .requestMatchers(HttpMethod.GET, "/api/v1/pages", "/api/v1/pages/**")
                         .hasAnyRole("STAGIAIRE", "DEV", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/v1/pages", "/api/v1/pages/**")
+                        .hasAnyRole("DEV", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/pages/**")
                         .hasAnyRole("DEV", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/pages", "/api/v1/pages/**")
                         .hasAnyRole("DEV", "ADMIN")

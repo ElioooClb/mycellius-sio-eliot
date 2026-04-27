@@ -11,12 +11,9 @@ export class ApiError extends Error {
 export async function apiRequest(path, { method = "GET", token = null, body = null } = {}) {
   const headers = { "Content-Type": "application/json" };
 
-  // ✅ garde-fou : /auth/login doit être POST
     if (path === "/api/v1/auth/login" && method === "GET") {
       throw new Error("apiRequest: /api/v1/auth/login doit être appelé en POST (pas en GET).");
     }
-
-  // Si aucun token n'est fourni, on le récupère depuis le localStorage
   const effectiveToken = token || localStorage.getItem("token");
   if (effectiveToken) headers.Authorization = `Bearer ${effectiveToken}`;
 

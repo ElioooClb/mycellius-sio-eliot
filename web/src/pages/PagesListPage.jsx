@@ -32,20 +32,29 @@ export default function PagesListPage() {
    load();
  }, [token, logout, navigate]);
  return (
- <div style={{ padding: 24 }}>
- <h2>Pages</h2>
- <p>Rôle : {role}</p>
- <div style={{ marginBottom: 12 }}>
- {(role === "DEV" || role === "ADMIN") && <Link to="/pages/new">Créer une page</Link>}
- </div>
- {error && <p>{error}</p>}
- <ul>
- {pages.map(p => (
- <li key={p.id}>
- <Link to={`/pages/${p.id}`}>{p.title} ({p.id})</Link>
- </li>
- ))}
- </ul>
- </div>
- );
+  <div className="container">
+    <div className="card">
+      <h2>Pages</h2>
+      <p>Rôle : {role}</p>
+<button onClick={() => { logout(); navigate("/login"); }}>
+  Se déconnecter
+</button>
+      {(role === "DEV" || role === "ADMIN") && (
+        <button onClick={() => navigate("/pages/new")}>
+          + Créer une page
+        </button>
+      )}
+
+      <ul style={{ marginTop: 20 }}>
+        {pages.map(p => (
+          <li key={p.id} style={{ marginBottom: 10 }}>
+            <Link to={`/pages/${p.id}`}>
+              {p.title}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+);
 }

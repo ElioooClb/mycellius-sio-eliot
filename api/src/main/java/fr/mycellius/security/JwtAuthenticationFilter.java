@@ -26,8 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String uri = request.getRequestURI();
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-        // ✅ Log uniquement pour /api/v1/pages
+        
         if (uri.startsWith("/api/v1/pages")) {
             System.out.println("[JWT] " + request.getMethod() + " " + uri
                     + " authHeader=" + (header == null ? "null" : header.substring(0, Math.min(20, header.length())) + "..."));
@@ -52,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (Exception ex) {
                 System.err.println("[JWT] INVALID on " + uri + " -> " + ex.getClass().getSimpleName() + ": " + ex.getMessage());
-                ex.printStackTrace(); // important
+                ex.printStackTrace();
                 SecurityContextHolder.clearContext();
             }
         }

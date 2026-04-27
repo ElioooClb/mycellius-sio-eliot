@@ -46,7 +46,10 @@ export default function PagesListScreen({ navigation }) {
  }
  }
  }
- useEffect(() => { loadList(); }, [token]);
+ useEffect(() => {
+  const unsub = navigation.addListener("focus", loadList);
+  return unsub;
+ }, [navigation, token]);
  return (
  <View style={{ padding: 16, gap: 12 }}>
  <View style={{ flexDirection: "row", gap: 8 }}>
@@ -55,6 +58,9 @@ onChangeText={setQuery}
  style={{ borderWidth: 1, padding: 8, flex: 1 }} />
  <Button title="OK" onPress={onSearch} />
  </View>
+ {(role === "DEV" || role === "ADMIN") && (
+  <Button title="Créer une page" onPress={() => navigation.navigate("NewPage")} />
+ )}
  <Button title="Rafraîchir" onPress={loadList} />
  {error && <Text>{error}</Text>}
  <FlatList

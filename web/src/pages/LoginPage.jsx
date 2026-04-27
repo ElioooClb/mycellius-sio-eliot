@@ -24,15 +24,29 @@ export default function LoginPage() {
  }
  }
  return (
- <div style={{ padding: 24 }}>
- <h2>Mycellius — Login</h2>
- <form onSubmit={onSubmit} style={{ display: "grid", gap: 12, maxWidth: 320 }}>
- <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="username" />
- <input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="password"
-type="password" />
- <button type="submit">Se connecter</button>
- </form>
- {error && <p style={{ marginTop: 12 }}>{String(error)}</p>}
- </div>
- );
+  <div className="container">
+    <div className="card">
+      <h2>Mycellius — Login</h2>
+
+      <form onSubmit={onSubmit} style={{ display: "grid", gap: 12 }}>
+        <input
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Username"
+        />
+
+        <input
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          type="password"
+        />
+
+        <button type="submit">Se connecter</button>
+      </form>
+
+      {error && <p>{error}</p>}
+    </div>
+  </div>
+);
 }

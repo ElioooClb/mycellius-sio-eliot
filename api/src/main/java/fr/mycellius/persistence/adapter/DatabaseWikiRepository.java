@@ -1,6 +1,7 @@
 package fr.mycellius.persistence.adapter;
 import fr.mycellius.domain.Tag;
 import fr.mycellius.domain.WikiPage;
+import fr.mycellius.domain.exception.PageNotFoundException;
 import fr.mycellius.persistence.entity.TagEntity;
 import fr.mycellius.persistence.entity.WikiPageEntity;
 import fr.mycellius.persistence.jpa.TagJpaRepository;
@@ -25,6 +26,13 @@ public class DatabaseWikiRepository implements WikiRepository {
         this.pageJpa = pageJpa;
         this.tagJpa = tagJpa;
         this.mapper = mapper;
+    }
+    @Override
+    public void deleteById(String id) {
+        if (!pageJpa.existsById(id)) {
+            throw new PageNotFoundException(id);
+        }
+        pageJpa.deleteById(id);
     }
     @Override
     public WikiPage save(WikiPage page) {

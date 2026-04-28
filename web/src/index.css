@@ -1,58 +1,20 @@
+:root {
+  font-family: Inter, Arial, sans-serif;
+  color: #10233f;
+  background: #f4f7fb;
+}
+
 * {
   box-sizing: border-box;
 }
 
-input:focus, textarea:focus {
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
-}
-
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f4f6f8;
-  color: #1e293b;
+  min-width: 320px;
+  min-height: 100vh;
 }
 
-.container {
-  max-width: 900px;
-  margin: auto;
-  padding: 24px;
-}
-
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-button {
-  background: #2563eb;
-  color: white;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #1d4ed8;
-}
-
-input, textarea {
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #cbd5e1;
-  width: 100%;
-}
-
-a {
-  color: #2563eb;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
+button,
+input {
+  font: inherit;
 }

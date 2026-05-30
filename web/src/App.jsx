@@ -1,6 +1,7 @@
 import LoginPage from "./pages/LoginPage";
 import PagesListPage from "./pages/PagesListPage";
 import PageDetailPage from "./pages/PageDetailPage";
+import PageFormPage from "./pages/PageFormPage";
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./auth/AuthContext";
@@ -31,6 +32,24 @@ export default function App() {
             element={
               <RequireAuth>
                 <PagesListPage />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/pages/new"
+            element={
+              <RequireAuth>
+                <PageFormPage mode="create" />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/pages/:id/edit"
+            element={
+              <RequireAuth>
+                <PageFormPage mode="edit" />
               </RequireAuth>
             }
           />

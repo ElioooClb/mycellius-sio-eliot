@@ -46,7 +46,16 @@ export default function PageFormPage({ mode }) {
  } catch (e) {
  if (e instanceof ApiError && e.status === 401) { logout(); navigate("/login"); return; }
  if (e instanceof ApiError && e.status === 403) { navigate("/forbidden"); return; }
- setError(e instanceof ApiError ? JSON.stringify(e.body) : "Erreur enregistrement");
+ if (e instanceof ApiError) {
+   const body = e.body;
+   if (body?.details?.length > 0) {
+     setError(body.details.map(d => d.message).join(" — "));
+   } else {
+     setError(body?.message ?? "Erreur enregistrement");
+   }
+ } else {
+   setError("Erreur réseau pendant l'enregistrement.");
+ }
  }
  }
  return (
@@ -56,9 +65,10 @@ export default function PageFormPage({ mode }) {
  <input
  value={form.id}
  onChange={(e) => setForm({ ...form, id: e.target.value })}
- placeholder="id (ex: PAGE-123)"
+ placeholder="ex: PAGE-001"
  disabled={mode === "edit"}
  />
+ <small style={{ color: "#666" }}>Format attendu : PAGE-001, PAGE-042, etc. (PAGE- suivi de 3 chiffres)</small>
  <input
  value={form.title}
  onChange={(e) => setForm({ ...form, title: e.target.value })}

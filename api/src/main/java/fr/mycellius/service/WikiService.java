@@ -5,6 +5,8 @@ import fr.mycellius.domain.exception.PageNotFoundException;
 import fr.mycellius.repository.WikiRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,8 +28,10 @@ public class WikiService {
         }
 
         WikiPage existing = repository.getById(page.getId());
+
         if (existing != null) {
-            throw new IllegalArgumentException("Une page avec l'id " + page.getId() + " existe déjà");
+            throw new IllegalArgumentException(
+                    "Une page avec l'id " + page.getId() + " existe déjà");
         }
 
         return repository.save(page);
@@ -35,9 +39,15 @@ public class WikiService {
 
     public WikiPage getPageById(String id) {
         WikiPage page = repository.getById(id);
+
         if (page == null) {
             throw new PageNotFoundException(id);
         }
+
+        if (page.isConfidential() && currentUserHasRole("STAGIAIRE")) {
+            throw new PageNotFoundException(id);
+        }
+
         return page;
     }
 
@@ -47,6 +57,7 @@ public class WikiService {
         }
 
         WikiPage existing = repository.getById(id);
+
         if (existing == null) {
             throw new PageNotFoundException(id);
         }
@@ -55,17 +66,46 @@ public class WikiService {
                 id,
                 page.getTitle(),
                 page.getContent(),
-                page.getTags()
-        );
+                page.getTags(),
+                existing.getCreatedAt(),
+                page.isConfidential());
 
         return repository.save(updated);
     }
 
     public Page<WikiPage> listPages(Pageable pageable) {
+        if (currentUserHasRole("STAGIAIRE")) {
+            return repository.findAllPublic(pageable);
+        }
+
         return repository.findAll(pageable);
     }
 
-    public Page<WikiPage> searchByTitle(String fragment, Pageable pageable) {
-        return repository.searchByTitle(fragment, pageable);
+    public Page<WikiPage> searchByTitle(
+            String fragment,
+            Pageable pageable) {
+        if (currentUserHasRole("STAGIAIRE")) {
+            return repository.searchPublicByTitle(
+                    fragment,
+                    pageable);
+        }
+
+        return repository.searchByTitle(
+                fragment,
+                pageable);
+    }
+
+    private boolean currentUserHasRole(String role) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null) {
+            return false;
+        }
+
+        String expectedAuthority = "ROLE_" + role;
+
+        return authentication.getAuthorities()
+                .stream()
+                .anyMatch(authority -> authority.getAuthority().equals(expectedAuthority));
     }
 }
